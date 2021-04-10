@@ -1,146 +1,385 @@
-function Quiz(questions) {
+var quizBody = document.getElementById("quiz");
 
-    this.score = 0;
-  
-    this.questions = questions;
-  
-    this.questionIndex = 0;
-  
-  }
-  
-  Quiz.prototype.getQuestionIndex = function() {
-  
-    return this.questions[this.questionIndex];
-  
-  }
-  
-  Quiz.prototype.guess = function(answer) {
-  
-    if(this.getQuestionIndex().isCorrectAnswer(answer)) {
-  
-        this.score++;
-  
+var resultsEl = document.getElementById("result");
+
+var finalScoreEl = document.getElementById("finalScore");
+
+var gameoverDiv = document.getElementById("gameover");
+
+var questionsEl = document.getElementById("questions");
+
+var quizTimer = document.getElementById("timer");
+
+var startQuizButton = document.getElementById("startbtn");
+
+var startQuizDiv = document.getElementById("startpage");
+
+var highscoreContainer = document.getElementById("highscoreContainer");
+
+var highscoreDiv = document.getElementById("high-scorePage");
+
+var highscoreInputName = document.getElementById("initials");
+
+var highscoreDisplayName = document.getElementById("highscore-initials");
+
+var endGameBtns = document.getElementById("endGameBtns");
+
+var submitScoreBtn = document.getElementById("submitScore");
+
+var highscoreDisplayScore = document.getElementById("highscore-score");
+
+var buttonA = document.getElementById("a");
+
+var buttonB = document.getElementById("b");
+
+var buttonC = document.getElementById("c");
+
+var buttonD = document.getElementById("d");
+
+
+
+var quizQuestions = [{
+
+    question: "How many elements can you apply an 'ID' attribute to?",
+
+    choiceA: "As many as you want",
+
+    choiceB: "3",
+
+    choiceC: "1",
+
+    choiceD: "128",
+
+    correctAnswer: "c"},
+
+  {
+
+    question: "What does DOM stand for?",
+
+    choiceA: "Document Object Model",
+
+    choiceB: "Display Object Management",
+
+    choiceC: "Digital Ordinance Model",
+
+    choiceD: "Desktop Oriented Mode",
+
+    correctAnswer: "a"},
+
+   {
+
+    question: "What is used primarily to add styling to a web page?",
+
+    choiceA: "HTML",
+
+    choiceB: "CSS",
+
+    choiceC: "Python",
+
+    choiceD: "React.js",
+
+    correctAnswer: "b"},
+
+    {
+
+    question: "What HTML tags are JavaScript code wrapped in?",
+
+    choiceA: "&lt;div&gt;",
+
+    choiceB: "&lt;link&gt;",
+
+    choiceC: "&lt;head&gt;",
+
+    choiceD: "&lt;script&gt;",
+
+    correctAnswer: "d"},
+
+    {
+
+    question: "When is localStorage data cleared?",
+
+    choiceA: "No expiration time",
+
+    choiceB: "On page reload",
+
+    choiceC: "On browser close",
+
+    choiceD: "On computer restart",
+
+    correctAnswer: "a"},  
+
+    {
+
+    question: "What does WWW stand for?",
+
+    choiceA: "Web World Workings",
+
+    choiceB: "Weak Winter Wind",
+
+    choiceC: "World Wide Web",
+
+    choiceD: "Wendy Wants Waffles",
+
+    correctAnswer: "c"},
+
+    {
+
+    question: "What HTML attribute references an external JavaScript file?",
+
+    choiceA: "href",
+
+    choiceB: "src",
+
+    choiceC: "class",
+
+    choiceD: "index",
+
+    correctAnswer: "b"},
+
+        
+
+    
+
+    ];
+
+
+
+var finalQuestionIndex = quizQuestions.length;
+
+var currentQuestionIndex = 0;
+
+var timeLeft = 76;
+
+var timerInterval;
+
+var score = 0;
+
+var correct;
+
+function generateQuizQuestion(){
+
+    gameoverDiv.style.display = "none";
+
+    if (currentQuestionIndex === finalQuestionIndex){
+
+        return showScore();
+
     }
-  
-    this.questionIndex++;
-  
-  }
-  
-  Quiz.prototype.isEnded = function() {
-  
-    return this.questionIndex === this.questions.length;
-  
-  }
-  
-  function Question(text, choices, answer) {
-  
-    this.text = text;
-  
-    this.choices = choices;
-  
-    this.answer = answer;
-  
-  }
-  
-  Question.prototype.isCorrectAnswer = function(choice) {
-  
-    return this.answer === choice;
-  
-  }
-  
-  function populate() {
-  
-    if(quiz.isEnded()) {
-  
-        showScores();
-  
-    }
-  
-    else {
-  
-        // show question
-  
-        var element = document.getElementById("question");
-  
-        element.innerHTML = quiz.getQuestionIndex().text;
-  
-        // show options
-  
-        var choices = quiz.getQuestionIndex().choices;
-  
-        for(var i = 0; i < choices.length; i++) {
-  
-            var element = document.getElementById("choice" + i);
-  
-            element.innerHTML = choices[i];
-  
-            guess("btn" + i, choices[i]);
-  
+
+    var currentQuestion = quizQuestions[currentQuestionIndex];
+
+    questionsEl.innerHTML = "<p>" + currentQuestion.question + "</p>";
+
+    buttonA.innerHTML = currentQuestion.choiceA;
+
+    buttonB.innerHTML = currentQuestion.choiceB;
+
+    buttonC.innerHTML = currentQuestion.choiceC;
+
+    buttonD.innerHTML = currentQuestion.choiceD;
+
+};
+
+function startQuiz(){
+
+    gameoverDiv.style.display = "none";
+
+    startQuizDiv.style.display = "none";
+
+    generateQuizQuestion();
+
+    //Timer
+
+    timerInterval = setInterval(function() {
+
+        timeLeft--;
+
+        quizTimer.textContent = "Time left: " + timeLeft;
+
+    
+
+        if(timeLeft === 0) {
+
+          clearInterval(timerInterval);
+
+          showScore();
+
         }
-  
-        showProgress();
-  
+
+      }, 1000);
+
+    quizBody.style.display = "block";
+
+}
+
+
+
+function showScore(){
+
+    quizBody.style.display = "none"
+
+    gameoverDiv.style.display = "flex";
+
+    clearInterval(timerInterval);
+
+    highscoreInputName.value = "";
+
+    finalScoreEl.innerHTML = "You got " + score + " out of " + quizQuestions.length + " correct!";
+
+}
+
+
+
+submitScoreBtn.addEventListener("click", function highscore(){
+
+    
+
+    
+
+    if(highscoreInputName.value === "") {
+
+        alert("Initials cannot be blank");
+
+        return false;
+
+    }else{
+
+        var savedHighscores = JSON.parse(localStorage.getItem("savedHighscores")) || [];
+
+        var currentUser = highscoreInputName.value.trim();
+
+        var currentHighscore = {
+
+            name : currentUser,
+
+            score : score
+
+        };
+
+    
+
+        gameoverDiv.style.display = "none";
+
+        highscoreContainer.style.display = "flex";
+
+        highscoreDiv.style.display = "block";
+
+        endGameBtns.style.display = "flex";
+
+        
+
+        savedHighscores.push(currentHighscore);
+
+        localStorage.setItem("savedHighscores", JSON.stringify(savedHighscores));
+
+        generateHighscores();
+
     }
-  
-  };
-  
-  function guess(id, guess) {
-  
-    var button = document.getElementById(id);
-  
-    button.onclick = function() {
-  
-        quiz.guess(guess);
-  
-        populate();
-  
+
+    
+
+});
+
+function generateHighscores(){
+
+    highscoreDisplayName.innerHTML = "";
+
+    highscoreDisplayScore.innerHTML = "";
+
+    var highscores = JSON.parse(localStorage.getItem("savedHighscores")) || [];
+
+    for (i=0; i<highscores.length; i++){
+
+        var newNameSpan = document.createElement("li");
+
+        var newScoreSpan = document.createElement("li");
+
+        newNameSpan.textContent = highscores[i].name;
+
+        newScoreSpan.textContent = highscores[i].score;
+
+        highscoreDisplayName.appendChild(newNameSpan);
+
+        highscoreDisplayScore.appendChild(newScoreSpan);
+
     }
-  
-  };
-  
-  function showProgress() {
-  
-    var currentQuestionNumber = quiz.questionIndex + 1;
-  
-    var element = document.getElementById("progress");
-  
-    element.innerHTML = "Question " + currentQuestionNumber + " of " + quiz.questions.length;
-  
-  };
-  
-  function showScores() {
-  
-    var gameOverHTML = "<h1>Result</h1>";
-  
-    gameOverHTML += "<h2 id='score'> Your scores: " + quiz.score + "</h2>";
-  
-    var element = document.getElementById("quiz");
-  
-    element.innerHTML = gameOverHTML;
-  
-  };
-  
-  
-  
-  var questions = [
-  
-    new Question("What is the best selling brand of tea in the United Kingdom?", [" Lipton", "Twinings","Scottish Blend","TATA"], "Twinings"),
-  
-    new Question("In which of the following sports do we need a shuttlecock?", ["Tennis", " Squash", "Badminton","Handball"], "Badminton"),
-  
-    new Question("Which is not a JavaScript Framework?", ["Python Script", "JQuery","Django", "NodeJS"], "Django"),
-  
-    new Question("Which is used for Connect To Database?", ["PHP", "HTML", "JS", "All"], "PHP"),
-  
-    new Question("Which country in Europe has the largest population?", ["Germany", "Russia", "France", "Canada"], "Russia")
-  
-  
-  ];
-  
-  
-  
-  var quiz = new Quiz(questions);
-  
-  
-  
-  populate();
+
+}
+
+function showHighscore(){
+
+    startQuizDiv.style.display = "none"
+
+    gameoverDiv.style.display = "none";
+
+    highscoreContainer.style.display = "flex";
+
+    highscoreDiv.style.display = "block";
+
+    endGameBtns.style.display = "flex";
+
+    generateHighscores();
+
+}
+
+function clearScore(){
+
+    window.localStorage.clear();
+
+    highscoreDisplayName.textContent = "";
+
+    highscoreDisplayScore.textContent = "";
+
+}
+
+function replayQuiz(){
+
+    highscoreContainer.style.display = "none";
+
+    gameoverDiv.style.display = "none";
+
+    startQuizDiv.style.display = "flex";
+
+    timeLeft = 76;
+
+    score = 0;
+
+    currentQuestionIndex = 0;
+
+}
+
+function checkAnswer(answer){
+
+    correct = quizQuestions[currentQuestionIndex].correctAnswer;
+
+    if (answer === correct && currentQuestionIndex !== finalQuestionIndex){
+
+        score++;
+
+        alert("That Is Correct!");
+
+        currentQuestionIndex++;
+
+        generateQuizQuestion();
+
+        //display in the results div that the answer is correct.
+
+    }else if (answer !== correct && currentQuestionIndex !== finalQuestionIndex){
+
+        alert("That Is Incorrect.")
+
+        currentQuestionIndex++;
+
+        generateQuizQuestion();
+
+        //display in the results div that the answer is wrong.
+
+    }else{
+
+        showScore();
+
+    }
+
+}
+
+startQuizButton.addEventListener("click",startQuiz);
