@@ -16,3 +16,5 @@ THEN the game is over
 WHEN the game is over
 THEN I can save my initials and my score
 ```
+![2021-04-10_1659](https://user-images.githubusercontent.com/61722709/114287745-4313ce80-9a1e-11eb-89f9-95bb008e559e.png)
+![2021-04-10_1658](https://user-images.githubusercontent.com/61722709/114287748-460ebf00-9a1e-11eb-967c-939050c203b6.png)
